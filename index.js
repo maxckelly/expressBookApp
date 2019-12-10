@@ -11,7 +11,6 @@ const PORT = 3333;
 // Allows express to read JSON files
 app.use(express.json());
 
-
 app.get('/', (req, res) => {
   return res.send(books);
 });
@@ -43,6 +42,14 @@ app.get('/sample/books', (req, res) => {
 app.post('/create/book', (req, res) => {
   const {id, author, title, isHardBack} = req.body;
 
+  // Schema is called here in bookHandler.js
+  let myNewId = books.reduce((highestId, num) => {
+    return (num.id > highestId) ? num.id : highestId
+  }, 0);
+
+  // Below is incrementing the id
+  myNewId++;
+
   const schema = {
     id: Joi.number().required(),
     author: Joi.string().min(3).required(),
@@ -51,7 +58,7 @@ app.post('/create/book', (req, res) => {
   };
 
   const newBook = {
-    id: parseInt(id), 
+    id: myNewId, 
     author: author, 
     title: title, 
     isHardBack: isHardBack
